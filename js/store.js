@@ -1,18 +1,17 @@
-import { Lesson, User } from './types';
 
-export const CURRENT_USER: User = {
+const CURRENT_USER = {
   name: 'Eleanor Vance',
   email: 'eleanor.vance@email.com',
   avatarUrl: 'https://picsum.photos/id/64/200/200'
 };
 
-export const INITIAL_LESSONS: Lesson[] = [
+const INITIAL_LESSONS = [
   {
     id: '1',
     title: 'How to share a photo',
     description: 'Learn how to share your favorite photos with friends and family.',
     createdAt: 'June 15',
-    thumbnailUrl: 'https://picsum.photos/id/1/400/800', // Mock phone screen
+    thumbnailUrl: 'https://picsum.photos/id/1/400/800', 
     videoUrl: 'https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4'
   },
   {
@@ -32,3 +31,28 @@ export const INITIAL_LESSONS: Lesson[] = [
     videoUrl: 'https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4'
   }
 ];
+
+// Initialize store
+if (!localStorage.getItem('lessons')) {
+  localStorage.setItem('lessons', JSON.stringify(INITIAL_LESSONS));
+}
+
+export const getLessons = () => {
+  const lessons = localStorage.getItem('lessons');
+  return lessons ? JSON.parse(lessons) : [];
+};
+
+export const addLesson = (lesson) => {
+  const lessons = getLessons();
+  lessons.unshift(lesson);
+  localStorage.setItem('lessons', JSON.stringify(lessons));
+};
+
+export const getLessonById = (id) => {
+  const lessons = getLessons();
+  return lessons.find(l => l.id === id);
+};
+
+export const getCurrentUser = () => {
+  return CURRENT_USER;
+};

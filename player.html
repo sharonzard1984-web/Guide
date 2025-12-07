@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>Smartphone Savvy - Login</title>
+    <title>Smartphone Savvy - Player</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -32,13 +32,6 @@
       .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
       body { background-color: #f6f7f8; color: #101c22; }
     </style>
-    <script type="importmap">
-    {
-      "imports": {
-        "@google/genai": "https://aistudiocdn.com/@google/genai@^1.31.0"
-      }
-    }
-    </script>
   </head>
   <body>
     <div class="min-h-screen w-full flex justify-center bg-gray-100 font-sans">
@@ -46,11 +39,11 @@
     </div>
     <script>
       (async () => {
-        const res = await fetch('pages/index.html');
+        const res = await fetch('pages/player.html');
         const html = await res.text();
         document.getElementById('content-root').innerHTML = html;
       })();
     </script>
-    <script type="module" src="js/login.js"></script>
+    <script type="module" src="js/player.js"></script>
   </body>
 </html>

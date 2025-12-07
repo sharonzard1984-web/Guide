@@ -1,20 +1,44 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+# Smartphone Savvy (Vanilla JS Version)
 
-# Run and deploy your AI Studio app
+This project has been migrated from React to Vanilla HTML/CSS/JS.
 
-This contains everything you need to run your app locally.
+## How to Run
 
-View your app in AI Studio: https://ai.studio/apps/drive/1MotyamMtYnZ7ojmsXtQXiQGnP74Y5Pz0
+Since the project uses ES Modules (`<script type="module">`), you need to serve it using a local HTTP server. You cannot just open the HTML files directly in the browser due to CORS restrictions.
 
-## Run Locally
+### Option 1: Using Python (Recommended)
+Since Python is detected in your environment:
+```bash
+python -m http.server
+```
+Then open [http://localhost:8000](http://localhost:8000) in your browser.
 
-**Prerequisites:**  Node.js
+### Option 2: Using Node.js
+If you have Node.js installed and configured:
+```bash
+npx serve .
+```
+or
+```bash
+npm install
+npm start
+```
 
+## Project Structure
+- **HTML Files**: `index.html` (Login), `welcome.html`, `dashboard.html`, `upload.html`, `player.html`, `settings.html`
+- **js/**: Contains all JavaScript logic (`store.js`, `geminiService.js`, and page-specific scripts).
+- **_backup/**: Contains the original React/Vite source code.
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+## API Key Configuration
+The app uses Google Gemini API for analyzing screenshots.
+1. Open the app in your browser.
+2. Open the Developer Tools (F12) -> Console.
+3. Run the following command with your actual API Key:
+   ```javascript
+   localStorage.setItem('GEMINI_API_KEY', 'your_actual_api_key_here');
+   ```
+4. Refresh the page.
+
+## Notes
+- The app uses `localStorage` to simulate a database for lessons and user session.
+- Veo video generation is experimental and requires specific API access.

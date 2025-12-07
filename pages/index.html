@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Smartphone Savvy - Login</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,1,0" rel="stylesheet" />
+    <script>
+      tailwind.config = { theme: { extend: { fontFamily: { sans: ['Lexend','sans-serif'] }, colors: { primary: '#13a4ec', 'primary-dark': '#0f8bc7', secondary: '#eef6fb', 'text-dark': '#101c22', 'text-gray': '#64748b' } } } };
+    </script>
+    <style>.no-scrollbar::-webkit-scrollbar{display:none}.no-scrollbar{-ms-overflow-style:none;scrollbar-width:none}body{background-color:#f6f7f8;color:#101c22}</style>
+  </head>
+  <body>
+    <div class="min-h-screen w-full flex justify-center bg-gray-100 font-sans">
+      <div class="w-full max-w-md bg-white min-h-screen shadow-2xl overflow-hidden relative p-6 flex flex-col justify-center">
+        <div class="flex flex-col items-center mb-10">
+          <div class="w-20 h-20 bg-primary rounded-full flex items-center justify-center mb-6 shadow-xl shadow-blue-200"><span class="material-symbols-rounded text-white text-5xl">phone_iphone</span></div>
+          <h1 class="text-3xl font-bold text-text-dark mb-2 text-center">Smartphone Savvy</h1>
+          <p class="text-text-gray text-center max-w-[250px]">Welcome back! Please log in to continue.</p>
+        </div>
+        <form id="loginForm" class="space-y-6 w-full">
+          <div>
+            <label class="block text-text-dark font-medium mb-2 text-lg">Email or Username</label>
+            <input type="email" id="email" placeholder="yourname@example.com" class="w-full h-14 px-4 rounded-xl border border-gray-200 bg-gray-50 focus:bg-white focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all text-lg placeholder-gray-400" />
+          </div>
+          <div>
+            <label class="block text-text-dark font-medium mb-2 text-lg">Password</label>
+            <div class="relative">
+              <input type="password" id="password" placeholder="Enter your password" class="w-full h-14 pl-4 pr-12 rounded-xl border border-gray-200 bg-gray-50 focus:bg-white focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all text-lg placeholder-gray-400" />
+              <button type="button" id="togglePassword" class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-primary"><span class="material-symbols-rounded" id="eyeIcon">visibility_off</span></button>
+            </div>
+            <div class="flex justify-end mt-2"><button type="button" class="text-primary font-medium text-sm">Forgot Password?</button></div>
+          </div>
+          <button type="submit" class="h-14 rounded-xl font-bold text-lg flex items-center justify-center transition-all active:scale-95 disabled:opacity-50 disabled:active:scale-100 bg-primary text-white hover:bg-primary-dark shadow-lg shadow-blue-200 w-full mt-4">Log In</button>
+        </form>
+        <div class="mt-8 text-center"><p class="text-text-gray">Don't have an account? <button class="text-primary font-bold ml-1">Sign up</button></p></div>
+      </div>
+    </div>
+    <script type="module" src="../js/login.js"></script>
+  </body>
+</html>
