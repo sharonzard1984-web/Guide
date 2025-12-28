@@ -23,9 +23,37 @@ const bindLogin = () => {
     }
   });
 
-  form.addEventListener('submit', (e) => {
+  form.addEventListener('submit', async (e) => {
     e.preventDefault();
-    navigateTo('welcome.html');
+
+    const username = document.getElementById('email').value; // Assuming email input is used for username
+    const password = document.getElementById('password').value;
+
+    const formData = new URLSearchParams();
+    formData.append('username', username);
+    formData.append('password', password);
+
+    try {
+      const response = await fetch('http://127.0.0.1:8001/token', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: formData.toString(),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        localStorage.setItem('access_token', data.access_token);
+        navigateTo('welcome.html');
+      } else {
+        const errorData = await response.json();
+        alert(`Login failed: ${errorData.detail}`);
+      }
+    } catch (error) {
+      console.error('Error during login:', error);
+      alert('An error occurred during login. Please try again.');
+    }
   });
 };
 

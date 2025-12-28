@@ -4,30 +4,33 @@ This project has been migrated from React to Vanilla HTML/CSS/JS.
 
 ## How to Run
 
-Since the project uses ES Modules (`<script type="module">`), you need to serve it using a local HTTP server. You cannot just open the HTML files directly in the browser due to CORS restrictions.
+You need to start both the **Backend (API)** and the **Frontend (Client)**.
 
-### Option 1: Using Python (Recommended)
-Since Python is detected in your environment:
+### 1. Start the Backend (FastAPI)
+Open a terminal and run:
 ```bash
-python -m http.server
-```
-Then open [http://localhost:8000](http://localhost:8000) in your browser.
+# Install dependencies first if you haven't:
+# pip install fastapi uvicorn python-multipart passlib[bcrypt] python-jose[jwt]
 
-### Option 2: Using Node.js
-If you have Node.js installed and configured:
-```bash
-npx serve .
+uvicorn backend.main:app --reload --host 0.0.0.0 --port 8001
 ```
-or
+The API will be available at `http://127.0.0.1:8001`.
+
+### 2. Start the Frontend (Client)
+Open a second terminal in the project root and run:
 ```bash
-npm install
-npm start
+python -m http.server 8000
 ```
+Then open [http://localhost:8000/pages/index.html](http://localhost:8000/pages/index.html) in your browser.
+
+---
 
 ## Project Structure
-- **HTML Files**: `index.html` (Login), `welcome.html`, `dashboard.html`, `upload.html`, `player.html`, `settings.html`
-- **js/**: Contains all JavaScript logic (`store.js`, `geminiService.js`, and page-specific scripts).
-- **_backup/**: Contains the original React/Vite source code.
+- **backend/**: FastAPI implementation (auth, database, schemas)
+- **pages/**: HTML templates
+- **js/**: JavaScript logic and API integration
+- **static/avatars/**: User uploaded profile pictures
+- **_backup/**: Original React source code
 
 ## API Key Configuration
 The app uses Google Gemini API for analyzing screenshots.
