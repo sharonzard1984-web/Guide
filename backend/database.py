@@ -23,6 +23,13 @@ def get_user(username: str) -> Optional[UserInDB]:
             return UserInDB(**user_data)
     return None
 
+def get_user_by_email(email: str) -> Optional[UserInDB]:
+    users_data = _read_users_from_file()
+    for user_data in users_data:
+        if user_data.get("email") == email:
+            return UserInDB(**user_data)
+    return None
+
 def create_user(user: UserInDB) -> UserInDB:
     users_data = _read_users_from_file()
     users_data.append(user.dict())

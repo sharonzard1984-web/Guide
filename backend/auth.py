@@ -10,10 +10,15 @@ SECRET_KEY = os.getenv("SECRET_KEY", "dev-secret")
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
-pwd_context = CryptContext(schemes=["bcrypt_sha256"], deprecated="auto")
+# Use pbkdf2_sha256 for hashing. It's secure, has no 72-byte limit, 
+# and avoids bugs with newer bcrypt libraries in passlib.
+pwd_context = CryptContext(schemes=["pbkdf2_sha256"], deprecated="auto")
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
-    return pwd_context.verify(plain_password, hashed_password)
+    try:
+        return pwd_context.verify(plain_password, hashed_password)
+    except Exception:
+        return False
 
 def get_password_hash(password: str) -> str:
     return pwd_context.hash(password)
@@ -37,3 +42,4 @@ def verify_token(token: str, credentials_exception):
         return username
     except JWTError:
         raise credentials_exception
+    

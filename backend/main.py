@@ -1,26 +1,45 @@
-from fastapi import FastAPI, HTTPException, status, Depends, File, UploadFile, Response
+from fastapi import FastAPI, HTTPException, status, Depends, File, UploadFile, Response, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import FileResponse
+from fastapi.responses import JSONResponse
 import shutil
 import os
+import logging
+import traceback
+
+# Set up logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 from .schemas import UserCreate, UserInDB, Token, PasswordChange
 from .auth import get_password_hash, verify_password, create_access_token, verify_token
-from .database import create_user, get_user, update_user
+from .database import create_user, get_user, update_user, get_user_by_email
 
 app = FastAPI()
 
+@app.exception_handler(Exception)
+async def global_exception_handler(request: Request, exc: Exception):
+    logger.error(f"Global exception: {exc}")
+    logger.error(traceback.format_exc())
+    return JSONResponse(
+        status_code=500,
+        content={"detail": str(exc), "traceback": traceback.format_exc()},
+    )
+
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
-origins = ["*"]
+# Allow both localhost and 127.0.0.1 with port 8000
+origins = [
+    "http://localhost:8000",
+    "http://127.0.0.1:8000",
+]
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
     allow_credentials=True,
-    allow_methods=["*"] ,
+    allow_methods=["*"],
     allow_headers=["*"],
 )
 
@@ -52,9 +71,11 @@ async def vite_client_placeholder():
 
 @app.post("/signup", response_model=UserInDB, status_code=status.HTTP_201_CREATED)
 async def register_user(user: UserCreate):
-    db_user = get_user(user.username)
-    if db_user:
+    # Check if username or email already exists
+    if get_user(user.username):
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Username already registered")
+    if get_user_by_email(user.email):
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Email already registered")
     
     hashed_password = get_password_hash(user.password)
     db_user = UserInDB(username=user.username, email=user.email, hashed_password=hashed_password)
@@ -64,11 +85,16 @@ async def register_user(user: UserCreate):
 
 @app.post("/token", response_model=Token)
 async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends()):
-    user = get_user(form_data.username)
+    # Try to find user by email first, as requested
+    user = get_user_by_email(form_data.username)
+    # If not found by email, try username (optional, but good for backward compatibility)
+    if not user:
+        user = get_user(form_data.username)
+        
     if not user or not verify_password(form_data.password, user.hashed_password):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Incorrect username or password",
+            detail="Incorrect email or password",
             headers={"WWW-Authenticate": "Bearer"},
         )
     access_token = create_access_token(data={"sub": user.username})

@@ -23,6 +23,8 @@ python -m http.server 8000
 ```
 Then open [http://localhost:8000/pages/index.html](http://localhost:8000/pages/index.html) in your browser.
 
+**Note:** You must use your **Email** to log in. The login form has been updated to reflect this.
+
 ---
 
 ## Project Structure
