@@ -1,5 +1,5 @@
 {
-  "name": "Smartphone Savvy",
+  "name": "Guide",
   "description": "Turn confusing screenshots into simple, step-by-step video guides using Gemini AI.",
   "requestFramePermissions": [
     "camera",

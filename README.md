@@ -1,4 +1,4 @@
-# Smartphone Savvy (Vanilla JS Version)
+# Guide (Vanilla JS Version)
 
 This project has been migrated from React to Vanilla HTML/CSS/JS.
 

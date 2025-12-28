@@ -45,7 +45,11 @@ const bindLogin = () => {
       if (response.ok) {
         const data = await response.json();
         localStorage.setItem('access_token', data.access_token);
-        navigateTo('welcome.html');
+        
+        // Ensure new user flag is NOT set for regular login
+        localStorage.removeItem('is_new_user');
+        
+        navigateTo('dashboard.html');
       } else {
         const errorData = await response.json();
         alert(`Login failed: ${errorData.detail}`);

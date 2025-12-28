@@ -29,8 +29,29 @@ document.addEventListener('DOMContentLoaded', () => {
             });
 
             if (response.ok) {
-                alert('Sign up successful! You can now log in.');
-                window.location.href = 'index.html';
+                // Automatically log in the user after signup
+                const formData = new URLSearchParams();
+                formData.append('username', email); // Use email to log in
+                formData.append('password', password);
+
+                const loginResponse = await fetch('http://127.0.0.1:8001/token', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: formData.toString(),
+                });
+
+                if (loginResponse.ok) {
+                    const data = await loginResponse.json();
+                    localStorage.setItem('access_token', data.access_token);
+                    // Mark as a fresh signup so welcome page shows
+                    localStorage.setItem('is_new_user', 'true');
+                    window.location.href = 'welcome.html';
+                } else {
+                    alert('Sign up successful! Please log in manually.');
+                    window.location.href = 'index.html';
+                }
             } else {
                 const errorData = await response.json();
                 alert(`Sign up failed: ${errorData.detail}`);

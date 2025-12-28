@@ -3,6 +3,6 @@
         "username": "andrew",
         "email": "andrew@gmail.com",
         "hashed_password": "$pbkdf2-sha256$29000$CEHonbO2tjYmxDhHaM1Z6w$/2VT7daOLhVdLDELtxe5BhK5CCPgFl9rlg7tLGuFhBU",
-        "avatar_url": null
+        "avatar_url": "/static/avatars/andrew.png"
     }
 ]

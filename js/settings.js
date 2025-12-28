@@ -12,7 +12,7 @@ const bindSettings = () => {
   const currentPasswordInput = document.getElementById('currentPassword');
   const newPasswordInput = document.getElementById('newPassword');
   const confirmNewPasswordInput = document.getElementById('confirmNewPassword');
-  const changeAvatarBtn = document.getElementById('changeAvatarBtn');
+  
   const changeAvatarModal = document.getElementById('changeAvatarModal');
   const cancelAvatarChange = document.getElementById('cancelAvatarChange');
   const changeAvatarForm = document.getElementById('changeAvatarForm');
@@ -36,13 +36,26 @@ const bindSettings = () => {
 
       if (response.ok) {
         const user = await response.json();
+        const avatarUrl = user.avatar_url 
+          ? `http://127.0.0.1:8001${user.avatar_url}` 
+          : 'https://ui-avatars.com/api/?name=' + encodeURIComponent(user.username) + '&background=random&size=96';
+          
         profile.innerHTML = `
-          <div class="w-24 h-24 rounded-full overflow-hidden border-4 border-white shadow-md mb-4">
-            <img src="${user.avatar_url || 'https://via.placeholder.com/96'}" alt="${user.username}" class="w-full h-full object-cover" />
+          <div id="avatarContainer" class="w-24 h-24 rounded-full overflow-hidden border-4 border-white shadow-md mb-4 cursor-pointer hover:opacity-80 transition-opacity">
+            <img src="${avatarUrl}" alt="${user.username}" class="w-full h-full object-cover" />
           </div>
           <h2 class="text-2xl font-bold text-text-dark">${user.username}</h2>
           <p class="text-text-gray">${user.email}</p>
         `;
+
+        // Bind the avatar click event after it's injected into the DOM
+        const avatarContainer = document.getElementById('avatarContainer');
+        if (avatarContainer) {
+          avatarContainer.addEventListener('click', () => {
+            const modal = document.getElementById('changeAvatarModal');
+            if (modal) modal.classList.remove('hidden');
+          });
+        }
       } else {
         // Handle error, e.g., token expired, redirect to login
         localStorage.removeItem('access_token');
@@ -124,14 +137,12 @@ const bindSettings = () => {
   });
 
   // Event Listeners for Avatar Change
-  changeAvatarBtn.addEventListener('click', () => {
-    changeAvatarModal.classList.remove('hidden');
-  });
-
-  cancelAvatarChange.addEventListener('click', () => {
-    changeAvatarModal.classList.add('hidden');
-    changeAvatarForm.reset();
-  });
+  if (cancelAvatarChange) {
+    cancelAvatarChange.addEventListener('click', () => {
+      changeAvatarModal.classList.add('hidden');
+      changeAvatarForm.reset();
+    });
+  }
 
   changeAvatarForm.addEventListener('submit', async (e) => {
     e.preventDefault();
