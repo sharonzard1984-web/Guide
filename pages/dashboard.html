@@ -10,7 +10,25 @@
     <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,1,0" rel="stylesheet" />
     <script>
-      tailwind.config = { theme: { extend: { fontFamily: { sans: ['Lexend','sans-serif'] }, colors: { primary: '#13a4ec', 'primary-dark': '#0f8bc7', secondary: '#eef6fb', 'text-dark': '#101c22', 'text-gray': '#64748b' } } } };
+      // Safer tailwind configuration
+      window.addEventListener('DOMContentLoaded', () => {
+        if (window.tailwind) {
+          tailwind.config = { 
+            theme: { 
+              extend: { 
+                fontFamily: { sans: ['Lexend','sans-serif'] }, 
+                colors: { 
+                  primary: '#13a4ec', 
+                  'primary-dark': '#0f8bc7', 
+                  secondary: '#eef6fb', 
+                  'text-dark': '#101c22', 
+                  'text-gray': '#64748b' 
+                } 
+              } 
+            } 
+          };
+        }
+      });
     </script>
     <style>.no-scrollbar::-webkit-scrollbar{display:none}.no-scrollbar{-ms-overflow-style:none;scrollbar-width:none}body{background-color:#f6f7f8;color:#101c22}</style>
   </head>
@@ -20,7 +38,9 @@
         <div class="bg-white p-6 pb-4 sticky top-0 z-10 shadow-sm">
           <div class="flex justify-between items-center mb-6">
             <h1 class="text-2xl font-bold text-text-dark">Your Lessons</h1>
-            <button id="settingsBtn" class="p-2 text-text-gray hover:bg-gray-100 rounded-full transition-colors"><span class="material-symbols-rounded text-3xl">settings</span></button>
+            <button id="profileBtn" class="w-10 h-10 rounded-full overflow-hidden border-2 border-primary shadow-sm hover:opacity-80 transition-opacity">
+              <img id="userAvatar" src="https://ui-avatars.com/api/?name=User&background=random" alt="Profile" class="w-full h-full object-cover" />
+            </button>
           </div>
         </div>
         <div id="lessonList" class="p-4 space-y-4 pb-24"></div>

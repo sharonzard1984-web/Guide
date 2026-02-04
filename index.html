@@ -41,16 +41,8 @@
     </script>
   </head>
   <body>
-    <div class="min-h-screen w-full flex justify-center bg-gray-100 font-sans">
-      <div id="content-root"></div>
-    </div>
     <script>
-      (async () => {
-        const res = await fetch('pages/index.html');
-        const html = await res.text();
-        document.getElementById('content-root').innerHTML = html;
-      })();
+      window.location.href = 'pages/index.html';
     </script>
-    <script type="module" src="js/login.js"></script>
   </body>
 </html>

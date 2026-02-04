@@ -41,7 +41,7 @@ const bindSettings = () => {
           : 'https://ui-avatars.com/api/?name=' + encodeURIComponent(user.username) + '&background=random&size=96';
           
         profile.innerHTML = `
-          <div id="avatarContainer" class="w-24 h-24 rounded-full overflow-hidden border-4 border-white shadow-md mb-4 cursor-pointer hover:opacity-80 transition-opacity">
+          <div id="avatarContainer" class="w-24 h-24 rounded-full overflow-hidden border-4 border-primary shadow-md mb-4 cursor-pointer hover:opacity-80 transition-opacity">
             <img src="${avatarUrl}" alt="${user.username}" class="w-full h-full object-cover" />
           </div>
           <h2 class="text-2xl font-bold text-text-dark">${user.username}</h2>

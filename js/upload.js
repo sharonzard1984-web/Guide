@@ -1,4 +1,5 @@
-import { fileToBase64, analyzeScreenshot, generateVeoVideo } from './geminiService.js';
+import { fileToBase64, analyzeScreenshot } from './geminiService.js';
+import { generateMuseSteamerVideo } from './baiduService.js';
 import { addLesson } from './store.js';
 
 const bindUpload = () => {
@@ -10,35 +11,71 @@ const bindUpload = () => {
   const processingState = document.getElementById('processingState');
   const statusMessage = document.getElementById('statusMessage');
   const uploadBtn = document.getElementById('uploadBtn');
-  const cameraBtn = document.getElementById('cameraBtn');
 
-  if (!fileInput || !processingState || !statusMessage || !uploadBtn || !cameraBtn) {
+  if (!fileInput || !processingState || !statusMessage || !uploadBtn) {
     setTimeout(bindUpload, 50);
     return;
   }
 
   const triggerUpload = () => fileInput.click();
   uploadBtn.addEventListener('click', triggerUpload);
-  cameraBtn.addEventListener('click', triggerUpload);
 
   fileInput.addEventListener('change', async (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
     processingState.classList.remove('hidden');
-    statusMessage.textContent = 'Analyzing your screenshot...';
+    statusMessage.textContent = 'Saving photo and analyzing...';
+
+    const API_URL = 'http://127.0.0.1:8001';
+    const formData = new FormData();
+    formData.append('file', file);
 
     try {
+      // Save to backend
+      const uploadResponse = await fetch(`${API_URL}/upload-photo`, {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!uploadResponse.ok) {
+        const errorData = await uploadResponse.json();
+        throw new Error(errorData.detail || 'Failed to upload photo to server');
+      }
+      
       const base64 = await fileToBase64(file);
       const analysis = await analyzeScreenshot(base64);
-      statusMessage.textContent = 'Creating your video guide...';
+      statusMessage.textContent = 'Creating your video guide... This may take a minute.';
 
       let videoUrl = undefined;
       try {
-        const generatedVideo = await generateVeoVideo(base64);
-        if (generatedVideo) videoUrl = generatedVideo;
-      } catch (veoErr) {
-        console.warn('Veo generation skipped or failed', veoErr);
+        // Use Baidu MuseSteamer for video generation
+        const generatedVideo = await generateMuseSteamerVideo(base64, analysis.title);
+        if (generatedVideo) {
+          // Save the video locally to the backend
+          statusMessage.textContent = 'Finalizing video guide...';
+          const saveResponse = await fetch(`${API_URL}/save-video`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              video_url: generatedVideo,
+              filename: `video_${Date.now()}.mp4`
+            })
+          });
+
+          if (saveResponse.ok) {
+            const saveData = await saveResponse.json();
+            videoUrl = `http://127.0.0.1:8001${saveData.path}`;
+          } else {
+            // Fallback to the Baidu URL if saving locally fails
+            videoUrl = generatedVideo;
+          }
+        } else {
+          statusMessage.textContent = 'Video generation took too long, but your text guide is ready!';
+          await new Promise(r => setTimeout(r, 2000));
+        }
+      } catch (baiduErr) {
+        console.warn('Baidu MuseSteamer generation skipped or failed', baiduErr);
       }
 
       const thumbBase64 = `data:${file.type};base64,${base64}`;

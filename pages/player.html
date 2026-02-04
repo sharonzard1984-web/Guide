@@ -10,22 +10,91 @@
     <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,1,0" rel="stylesheet" />
     <script>
-      tailwind.config = { theme: { extend: { fontFamily: { sans: ['Lexend','sans-serif'] }, colors: { primary: '#13a4ec', 'primary-dark': '#0f8bc7', secondary: '#eef6fb', 'text-dark': '#101c22', 'text-gray': '#64748b' } } } };
+      // Safer tailwind configuration
+      window.addEventListener('DOMContentLoaded', () => {
+        if (window.tailwind) {
+          tailwind.config = { 
+            theme: { 
+              extend: { 
+                fontFamily: { sans: ['Lexend','sans-serif'] }, 
+                colors: { 
+                  primary: '#13a4ec', 
+                  'primary-dark': '#0f8bc7', 
+                  secondary: '#eef6fb', 
+                  'text-dark': '#101c22', 
+                  'text-gray': '#64748b' 
+                } 
+              } 
+            } 
+          };
+        }
+      });
     </script>
-    <style>.no-scrollbar::-webkit-scrollbar{display:none}.no-scrollbar{-ms-overflow-style:none;scrollbar-width:none}body{background-color:#f6f7f8;color:#101c22}</style>
+    <style>
+      .no-scrollbar::-webkit-scrollbar { display: none; }
+      .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+      body { background-color: #000; color: #fff; margin: 0; padding: 0; overflow: hidden; }
+      .video-background {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 0;
+      }
+      .overlay-content {
+        position: relative;
+        z-index: 10;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        pointer-events: none;
+      }
+      .interactive {
+        pointer-events: auto;
+      }
+      .description-preview {
+        background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.4) 70%, transparent 100%);
+        padding: 40px 20px 20px 20px;
+        cursor: pointer;
+      }
+      .drawer {
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        transform: translateY(100%);
+      }
+      .drawer.open {
+        transform: translateY(0);
+      }
+    </style>
   </head>
   <body>
-    <div class="min-h-screen w-full flex justify-center bg-gray-100 font-sans">
-      <div class="w-full max-w-md bg-white min-h-screen shadow-2xl overflow-hidden relative flex flex-col">
-        <div class="flex items-center p-4"><button onclick="window.location.href='dashboard.html'" class="p-2 text-text-dark hover:bg-gray-100 rounded-full"><span class="material-symbols-rounded">arrow_back</span></button><h1 class="text-xl font-bold flex-1 text-center pr-10">Your Tutorial</h1></div>
-        <div id="videoContainer" class="w-full bg-[#101c22] aspect-[4/3] sm:aspect-video relative flex items-center justify-center group rounded-b-2xl shadow-lg overflow-hidden"></div>
-        <div id="content" class="p-6 flex-1 overflow-y-auto no-scrollbar"></div>
-        <div class="p-6 space-y-4 bg-white border-t border-gray-100">
-          <button id="replayBtn" class="h-14 rounded-xl font-bold text-lg flex items-center justify-center transition-all active:scale-95 disabled:opacity-50 disabled:active:scale-100 bg-primary text-white hover:bg-primary-dark shadow-lg shadow-blue-200 w-full"><span class="material-symbols-rounded mr-2">replay</span>Replay Tutorial</button>
-          <button onclick="window.location.href='dashboard.html'" class="h-14 rounded-xl font-bold text-lg flex items-center justify-center transition-all active:scale-95 disabled:opacity-50 disabled:active:scale-100 border-2 border-gray-200 text-text-dark hover:bg-gray-50 w-full">Back to All Tutorials</button>
+    <div class="min-h-screen w-full flex justify-center bg-black font-sans">
+      <div class="w-full max-w-md h-screen relative overflow-hidden bg-black shadow-2xl">
+        <!-- Video Background -->
+        <div id="videoContainer" class="video-background">
+          <!-- Video will be injected here -->
+        </div>
+
+        <!-- Overlay Content -->
+        <div class="overlay-content">
+          <!-- Top Navigation -->
+          <div class="p-4 flex items-center interactive">
+            <button onclick="window.location.href='dashboard.html'" class="p-2 text-white bg-black/20 backdrop-blur-sm hover:bg-black/40 rounded-full transition-colors">
+              <span class="material-symbols-rounded">arrow_back</span>
+            </button>
+          </div>
+
+          <div class="flex-1"></div>
+
+          <!-- Bottom Description Area (Preview) -->
+          <div id="descriptionArea" class="description-preview interactive">
+            <h2 id="videoTitle" class="text-xl font-bold text-white mb-1"></h2>
+            <p id="videoDescPreview" class="text-white text-sm line-clamp-2 leading-snug opacity-90"></p>
+          </div>
         </div>
       </div>
     </div>
+
     <script type="module" src="../js/player.js"></script>
   </body>
 </html>
