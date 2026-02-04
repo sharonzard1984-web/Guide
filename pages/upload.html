@@ -13,7 +13,13 @@
       tailwind.config = { theme: { extend: { fontFamily: { sans: ['Lexend','sans-serif'] }, colors: { primary: '#13a4ec', 'primary-dark': '#0f8bc7', secondary: '#eef6fb', 'text-dark': '#101c22', 'text-gray': '#64748b' } } } };
     </script>
     <style>.no-scrollbar::-webkit-scrollbar{display:none}.no-scrollbar{-ms-overflow-style:none;scrollbar-width:none}body{background-color:#f6f7f8;color:#101c22}</style>
-    <script type="importmap">{"imports":{"@google/genai":"https://aistudiocdn.com/@google/genai@^1.31.0"}}</script>
+    <script type="importmap">
+    {
+      "imports": {
+        "@google/generative-ai": "https://esm.run/@google/generative-ai"
+      }
+    }
+    </script>
   </head>
   <body>
     <div class="min-h-screen w-full flex justify-center bg-gray-100 font-sans">
@@ -43,6 +49,6 @@
         </div>
       </div>
     </div>
-    <script type="module" src="../js/upload.js"></script>
+    <script type="module" src="../js/upload.js?v=2"></script>
   </body>
 </html>

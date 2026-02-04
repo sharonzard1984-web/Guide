@@ -1,6 +1,8 @@
-import { fileToBase64, analyzeScreenshot } from './geminiService.js';
-import { generateMuseSteamerVideo } from './baiduService.js';
-import { addLesson } from './store.js';
+import { fileToBase64, analyzeScreenshot } from './geminiService.js?v=3';
+import { generateMuseSteamerVideo } from './baiduService.js?v=3';
+import { addLesson } from './store.js?v=3';
+
+console.log("Upload.js v3 loaded - Cache busted");
 
 const bindUpload = () => {
   const navigateTo = (page) => {
@@ -49,27 +51,10 @@ const bindUpload = () => {
 
       let videoUrl = undefined;
       try {
-        // Use Baidu MuseSteamer for video generation
-        const generatedVideo = await generateMuseSteamerVideo(base64, analysis.title);
-        if (generatedVideo) {
-          // Save the video locally to the backend
-          statusMessage.textContent = 'Finalizing video guide...';
-          const saveResponse = await fetch(`${API_URL}/save-video`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              video_url: generatedVideo,
-              filename: `video_${Date.now()}.mp4`
-            })
-          });
-
-          if (saveResponse.ok) {
-            const saveData = await saveResponse.json();
-            videoUrl = `http://127.0.0.1:8001${saveData.path}`;
-          } else {
-            // Fallback to the Baidu URL if saving locally fails
-            videoUrl = generatedVideo;
-          }
+        // Use Baidu MuseSteamer for video generation (handled by server-side)
+        const generatedVideoPath = await generateMuseSteamerVideo(base64, analysis.title);
+        if (generatedVideoPath) {
+          videoUrl = generatedVideoPath;
         } else {
           statusMessage.textContent = 'Video generation took too long, but your text guide is ready!';
           await new Promise(r => setTimeout(r, 2000));

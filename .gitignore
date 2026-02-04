@@ -34,3 +34,11 @@ env/
 .pytest_cache/
 .coverage
 htmlcov/
+
+# Media
+backend/photos/
+backend/videos/
+!backend/photos/.gitkeep
+!backend/videos/.gitkeep
+static/avatars/
+!static/avatars/.gitkeep

@@ -1,4 +1,4 @@
-import { GoogleGenAI } from "@google/genai";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
 let ai = null;
 
@@ -15,7 +15,7 @@ const getAIClient = async () => {
     }
 
     if (apiKey) {
-      ai = new GoogleGenAI({ apiKey });
+      ai = new GoogleGenerativeAI(apiKey);
       return ai;
     }
   } catch (error) {
@@ -52,23 +52,17 @@ export const analyzeScreenshot = async (base64Image) => {
   }
   
   try {
+    // Use the standard GoogleGenerativeAI pattern
     const model = client.getGenerativeModel({ model: 'gemini-1.5-flash' });
-    const result = await model.generateContent({
-      contents: [{
-        role: 'user',
-        parts: [
-          {
-            inlineData: {
-              mimeType: 'image/jpeg',
-              data: base64Image
-            }
-          },
-          {
-            text: "Analyze this mobile app screenshot. Create a title for a 'How-to' tutorial based on what is shown. Write a short 1-sentence description. Then list 3-5 simple step-by-step instructions a senior user would follow to perform the action shown. Return the response as JSON with properties: title, description, and steps (an array of strings)."
-          }
-        ]
-      }]
-    });
+    const result = await model.generateContent([
+      {
+        inlineData: {
+          mimeType: 'image/jpeg',
+          data: base64Image
+        }
+      },
+      "Analyze this mobile app screenshot. Create a title for a 'How-to' tutorial based on what is shown. Write a short 1-sentence description. Then list 3-5 simple step-by-step instructions a senior user would follow to perform the action shown. Return the response as JSON with properties: title, description, and steps (an array of strings)."
+    ]);
 
     const response = await result.response;
     const text = response.text();
