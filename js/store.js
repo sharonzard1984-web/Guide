@@ -38,8 +38,15 @@ if (!localStorage.getItem('lessons')) {
 }
 
 export const getLessons = () => {
-  const lessons = localStorage.getItem('lessons');
-  return lessons ? JSON.parse(lessons) : [];
+  try {
+    const lessons = localStorage.getItem('lessons');
+    if (!lessons) return [];
+    const parsed = JSON.parse(lessons);
+    return Array.isArray(parsed) ? parsed : [];
+  } catch (e) {
+    console.error('Error parsing lessons from localStorage:', e);
+    return [];
+  }
 };
 
 export const addLesson = (lesson) => {

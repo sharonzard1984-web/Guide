@@ -1,16 +1,28 @@
 import { GoogleGenAI } from "@google/genai";
 
-// Try to get API key from localStorage or use a placeholder
-const API_KEY = localStorage.getItem('GEMINI_API_KEY') || 'YOUR_API_KEY_HERE';
+let ai = null;
 
-// Initialize Gemini Client
-// Note: If API_KEY is invalid, this will fail when making requests.
-let ai;
-try {
-    ai = new GoogleGenAI({ apiKey: API_KEY });
-} catch (e) {
-    console.error("Failed to initialize GoogleGenAI", e);
-}
+const getAIClient = async () => {
+  if (ai) return ai;
+  
+  try {
+    const response = await fetch('http://127.0.0.1:8001/config');
+    let apiKey = null;
+    
+    if (response.ok) {
+      const data = await response.json();
+      apiKey = data.gemini_api_key;
+    }
+
+    if (apiKey) {
+      ai = new GoogleGenAI({ apiKey });
+      return ai;
+    }
+  } catch (error) {
+    console.error('Error initializing Gemini client:', error);
+  }
+  return null;
+};
 
 /**
  * Helper to convert file to Base64
@@ -30,18 +42,20 @@ export const fileToBase64 = (file) => {
 };
 
 /**
- * Uses Gemini 2.5 Flash to analyze a screenshot and extract a tutorial structure.
+ * Uses Gemini 1.5 Flash to analyze a screenshot and extract a tutorial structure.
  */
 export const analyzeScreenshot = async (base64Image) => {
-  if (!ai) {
+  const client = await getAIClient();
+  if (!client) {
       console.error("AI client not initialized");
       return fallbackResult();
   }
   
   try {
-    const response = await ai.models.generateContent({
-      model: 'gemini-2.5-flash',
-      contents: {
+    const model = client.getGenerativeModel({ model: 'gemini-1.5-flash' });
+    const result = await model.generateContent({
+      contents: [{
+        role: 'user',
         parts: [
           {
             inlineData: {
@@ -50,38 +64,19 @@ export const analyzeScreenshot = async (base64Image) => {
             }
           },
           {
-            text: "Analyze this mobile app screenshot. Create a title for a 'How-to' tutorial based on what is shown. Write a short 1-sentence description. Then list 3-5 simple step-by-step instructions a senior user would follow to perform the action shown."
+            text: "Analyze this mobile app screenshot. Create a title for a 'How-to' tutorial based on what is shown. Write a short 1-sentence description. Then list 3-5 simple step-by-step instructions a senior user would follow to perform the action shown. Return the response as JSON with properties: title, description, and steps (an array of strings)."
           }
         ]
-      },
-      config: {
-        responseMimeType: "application/json",
-        responseSchema: {
-          type: "OBJECT",
-          properties: {
-            title: { type: "STRING" },
-            description: { type: "STRING" },
-            steps: {
-              type: "ARRAY",
-              items: { type: "STRING" }
-            }
-          },
-          required: ["title", "description", "steps"]
-        }
-      }
+      }]
     });
 
-    const text = response.text(); // Note: .text() is a method in some versions, or property .text in others. The original code used .text property.
-    // However, the original code used `response.text`. Let's check the original code again.
-    // Original: `const text = response.text;`
-    // Wait, `@google/genai` SDK usually has `response.text()`? 
-    // The original code `geminiService.ts` used `const text = response.text;`. 
-    // If that worked, I'll stick to it. But wait, `response` from `generateContent` in `@google/genai` (new SDK) might be different from `google-generative-ai`.
-    // The import is `@google/genai`.
-    // Let's assume the property access is correct if the original code had it.
+    const response = await result.response;
+    const text = response.text();
     
-    if (!text) throw new Error("No response from Gemini");
-    return JSON.parse(text);
+    // Clean up potential markdown formatting in JSON response
+    const jsonMatch = text.match(/\{[\s\S]*\}/);
+    const cleanedJson = jsonMatch ? jsonMatch[0] : text;
+    return JSON.parse(cleanedJson);
 
   } catch (error) {
     console.error("Gemini Analysis Error:", error);
@@ -101,29 +96,15 @@ function fallbackResult() {
  * Uses Veo to generate a short video clip from the image.
  */
 export const generateVeoVideo = async (base64Image) => {
-  // Check for Veo Key permissions
-  if (window.aistudio && window.aistudio.hasSelectedApiKey) {
-    const hasKey = await window.aistudio.hasSelectedApiKey();
-    if (!hasKey) {
-      await window.aistudio.openSelectKey();
-    }
-  }
-
-  if (!ai) return null;
+  const client = await getAIClient();
+  if (!client) return null;
 
   try {
-    let operation = await ai.models.generateVideos({
+    let operation = await client.models.generateVideos({
       model: 'veo-3.1-fast-generate-preview',
       image: {
         imageBytes: base64Image,
-        mimeType: 'image/jpeg',
       },
-      prompt: "Animate this interface to show a user tapping the main button. Educational style, clear visibility.",
-      config: {
-        numberOfVideos: 1,
-        resolution: '720p',
-        aspectRatio: '9:16' // Portrait for mobile
-      }
     });
 
     while (!operation.done) {
