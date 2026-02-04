@@ -7,6 +7,9 @@ import shutil
 import os
 import logging
 import traceback
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)
@@ -29,10 +32,12 @@ async def global_exception_handler(request: Request, exc: Exception):
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
-# Allow both localhost and 127.0.0.1 with port 8000
+# Allow both localhost and 127.0.0.1 with port 8000 and 8001
 origins = [
     "http://localhost:8000",
     "http://127.0.0.1:8000",
+    "http://localhost:8001",
+    "http://127.0.0.1:8001",
 ]
 
 app.add_middleware(
@@ -44,10 +49,16 @@ app.add_middleware(
 )
 
 AVATAR_DIR = "static/avatars"
+PHOTOS_DIR = "backend/photos"
+VIDEOS_DIR = "backend/videos"
 os.makedirs(AVATAR_DIR, exist_ok=True)
+os.makedirs(PHOTOS_DIR, exist_ok=True)
+os.makedirs(VIDEOS_DIR, exist_ok=True)
 
-# Mount static files (avatars only; frontend served separately)
+# Mount static files
 app.mount("/static", StaticFiles(directory="static"), name="static")
+app.mount("/backend/videos", StaticFiles(directory="backend/videos"), name="videos")
+app.mount("/backend/photos", StaticFiles(directory="backend/photos"), name="photos")
 
 async def get_current_user(token: str = Depends(oauth2_scheme)):
     credentials_exception = HTTPException(
@@ -69,6 +80,13 @@ async def read_root():
 async def vite_client_placeholder():
     return Response(status_code=204)
 
+@app.get("/config")
+async def get_config():
+    return {
+        "baidu_api_key": os.getenv("BAIDU_QIANFAN_API_KEY"),
+        "gemini_api_key": os.getenv("GEMINI_API_KEY")
+    }
+
 @app.post("/signup", response_model=UserInDB, status_code=status.HTTP_201_CREATED)
 async def register_user(user: UserCreate):
     # Check if username or email already exists
@@ -85,6 +103,7 @@ async def register_user(user: UserCreate):
 
 @app.post("/token", response_model=Token)
 async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends()):
+    logger.info(f"Login attempt for user: {form_data.username}")
     # Try to find user by email first, as requested
     user = get_user_by_email(form_data.username)
     # If not found by email, try username (optional, but good for backward compatibility)
@@ -129,3 +148,54 @@ async def change_avatar(file: UploadFile = File(...), current_user: UserInDB = D
     if not updated_user:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Failed to update avatar")
     return updated_user
+
+@app.post("/upload-photo")
+async def upload_photo(file: UploadFile = File(...)):
+    try:
+        # Create photos directory if it doesn't exist (absolute path)
+        absolute_photos_dir = os.path.join(os.getcwd(), "backend", "photos")
+        os.makedirs(absolute_photos_dir, exist_ok=True)
+        
+        file_path = os.path.join(absolute_photos_dir, file.filename)
+        logger.info(f"Saving uploaded file to: {file_path}")
+        
+        with open(file_path, "wb") as buffer:
+            shutil.copyfileobj(file.file, buffer)
+            
+        return {"filename": file.filename, "status": "success", "path": file_path}
+    except Exception as e:
+        logger.error(f"Error uploading photo: {e}")
+        logger.error(traceback.format_exc())
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/save-video")
+async def save_video(payload: dict):
+    video_url = payload.get("video_url")
+    filename = payload.get("filename")
+    
+    if not video_url or not filename:
+        raise HTTPException(status_code=400, detail="Missing video_url or filename")
+    
+    try:
+        import requests
+        
+        # Ensure filename has .mp4 extension
+        if not filename.endswith(".mp4"):
+            filename += ".mp4"
+            
+        local_path = os.path.join(VIDEOS_DIR, filename)
+        logger.info(f"Downloading video from {video_url} to {local_path}")
+        
+        response = requests.get(video_url, stream=True)
+        if response.status_code == 200:
+            with open(local_path, "wb") as f:
+                for chunk in response.iter_content(chunk_size=8192):
+                    f.write(chunk)
+            
+            return {"status": "success", "path": f"/backend/videos/{filename}"}
+        else:
+            raise HTTPException(status_code=response.status_code, detail="Failed to download video from Baidu")
+            
+    except Exception as e:
+        logger.error(f"Error saving video: {e}")
+        raise HTTPException(status_code=500, detail=str(e))

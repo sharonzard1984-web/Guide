@@ -4,5 +4,17 @@
         "email": "andrew@gmail.com",
         "hashed_password": "$pbkdf2-sha256$29000$CEHonbO2tjYmxDhHaM1Z6w$/2VT7daOLhVdLDELtxe5BhK5CCPgFl9rlg7tLGuFhBU",
         "avatar_url": "/static/avatars/andrew.png"
+    },
+    {
+        "username": "And",
+        "email": "a@gmail.com",
+        "hashed_password": "$pbkdf2-sha256$29000$ZizlHCNE6N0bw/hfCyGk1A$CnK/SCHPr/35tCZk7cD6Uusg.yhuZMoVwho1ARaVVbE",
+        "avatar_url": null
+    },
+    {
+        "username": "and",
+        "email": "and@qq.com",
+        "hashed_password": "$pbkdf2-sha256$29000$hNCa07o3hjAmJKQUYqx1rg$Z74Lqu2dyEg/SR7vQ2diQjHPXdfgJEk3R/PyLi7fs.Q",
+        "avatar_url": null
     }
 ]
