@@ -113,7 +113,7 @@ const bindSettings = () => {
 
     try {
       const token = localStorage.getItem('access_token');
-      const response = await fetch('http://127.0.0.1:8001/users/me/password', {
+      const response = await fetch('http://appguide.tech:8001/users/me/password', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -151,7 +151,7 @@ const bindSettings = () => {
 
     try {
       const token = localStorage.getItem('access_token');
-      const response = await fetch('http://127.0.0.1:8001/users/me/avatar', {
+      const response = await fetch('http://appguide.tech:8001/users/me/avatar', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,

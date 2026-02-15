@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const password = passwordInput.value;
 
         try {
-            const response = await fetch('http://127.0.0.1:8001/signup', {
+            const response = await fetch('http://appguide.tech:8001/signup', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
