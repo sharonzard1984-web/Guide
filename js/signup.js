@@ -34,7 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 formData.append('username', email); // Use email to log in
                 formData.append('password', password);
 
-                const loginResponse = await fetch('http://127.0.0.1:8001/token', {
+                const loginResponse = await fetch('http://appguide.tech:8001/token', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/x-www-form-urlencoded',

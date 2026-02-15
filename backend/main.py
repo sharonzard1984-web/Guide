@@ -44,12 +44,10 @@ async def global_exception_handler(request: Request, exc: Exception):
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 # Allow both localhost and 127.0.0.1 with port 8000 and 8001
-# port 8001 is binds with new website appguide.tech
 origins = [
     "http://localhost:8000",
     "http://127.0.0.1:8000",
-    "http://appguide.tech:8001",
-    "http://appguide.tech:8001",
+    "http://appguide.tech:8001"
 ]
 
 app.add_middleware(

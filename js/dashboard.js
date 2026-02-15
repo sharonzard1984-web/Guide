@@ -22,7 +22,7 @@ const bindDashboard = () => {
       const token = localStorage.getItem('access_token');
       if (!token) return;
 
-      const API_URL = 'http://127.0.0.1:8001';
+      const API_URL = 'http://appguide.tech:8001';
       const response = await fetch(`${API_URL}/users/me`, {
         method: 'GET',
         headers: {

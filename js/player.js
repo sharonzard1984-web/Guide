@@ -26,7 +26,7 @@ const bindPlayer = () => {
   }
 
   // Use the lesson's video URL if available, otherwise fallback to demo video
-  const videoUrl = lesson.videoUrl || "/backend/videos/demo.mp4";
+  const videoUrl = lesson.videoUrl || "http://appguide.tech:8001/backend/videos/demo.mp4";
   
   videoContainer.innerHTML = `
     <div class="absolute inset-0 w-full h-full overflow-hidden flex items-center justify-center bg-black">

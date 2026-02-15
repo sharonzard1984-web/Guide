@@ -27,7 +27,7 @@ const bindSettings = () => {
     }
 
     try {
-      const response = await fetch('http://127.0.0.1:8001/users/me', {
+      const response = await fetch('http://appguide.tech:8001/users/me', {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -37,7 +37,7 @@ const bindSettings = () => {
       if (response.ok) {
         const user = await response.json();
         const avatarUrl = user.avatar_url 
-          ? `http://127.0.0.1:8001${user.avatar_url}` 
+          ? `http://appguide.tech:8001${user.avatar_url}` 
           : 'https://ui-avatars.com/api/?name=' + encodeURIComponent(user.username) + '&background=random&size=96';
           
         profile.innerHTML = `

@@ -14,7 +14,7 @@ Open a terminal and run:
 
 uvicorn backend.main:app --reload --host 0.0.0.0 --port 8001
 ```
-The API will be available at `http://127.0.0.1:8001`.
+The API will be available at `http://appguide.tech:8001`.
 
 ### 2. Start the Frontend (Client)
 Open a second terminal in the project root and run:

@@ -12,7 +12,7 @@
 export const generateMuseSteamerVideo = async (base64Image, prompt) => {
   console.log('--- Baidu Video Generation Start (Backend Proxy) ---');
   try {
-    const response = await fetch('http://127.0.0.1:8001/generate-video', {
+    const response = await fetch('http://appguide.tech:8001/generate-video', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -35,7 +35,7 @@ export const generateMuseSteamerVideo = async (base64Image, prompt) => {
     console.log('Backend proxy response data:', data);
 
     if (data.status === 'success' && data.path) {
-      const fullUrl = `http://127.0.0.1:8001${data.path}`;
+      const fullUrl = `http://appguide.tech:8001${data.path}`;
       console.log('Generated Video URL via Proxy:', fullUrl);
       return fullUrl;
     }
