@@ -6,7 +6,7 @@ const getAIClient = async () => {
   if (ai) return ai;
   
   try {
-    const response = await fetch('http://appguide.tech:8001/config');
+    const response = await fetch('http://doubaospace.cn:8001/config');
     let apiKey = null;
     
     if (response.ok) {

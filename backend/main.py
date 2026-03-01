@@ -47,7 +47,7 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 origins = [
     "http://localhost:8000",
     "http://127.0.0.1:8000",
-    "http://appguide.tech:8001"
+    "http://doubaospace.cn:8001"
 ]
 
 app.add_middleware(

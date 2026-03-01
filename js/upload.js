@@ -29,7 +29,7 @@ const bindUpload = () => {
     processingState.classList.remove('hidden');
     statusMessage.textContent = 'Saving photo and analyzing...';
 
-    const API_URL = 'http://appguide.tech:8001';
+    const API_URL = 'http://doubaospace.cn:8001';
     const formData = new FormData();
     formData.append('file', file);
 

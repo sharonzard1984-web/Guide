@@ -27,7 +27,7 @@ const bindSettings = () => {
     }
 
     try {
-      const response = await fetch('http://appguide.tech:8001/users/me', {
+      const response = await fetch('http://doubaospace.cn:8001/users/me', {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -37,7 +37,7 @@ const bindSettings = () => {
       if (response.ok) {
         const user = await response.json();
         const avatarUrl = user.avatar_url 
-          ? `http://appguide.tech:8001${user.avatar_url}` 
+          ? `http://doubaospace.cn:8001${user.avatar_url}` 
           : 'https://ui-avatars.com/api/?name=' + encodeURIComponent(user.username) + '&background=random&size=96';
           
         profile.innerHTML = `
@@ -113,7 +113,7 @@ const bindSettings = () => {
 
     try {
       const token = localStorage.getItem('access_token');
-      const response = await fetch('http://appguide.tech:8001/users/me/password', {
+      const response = await fetch('http://doubaospace.cn:8001/users/me/password', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -151,7 +151,7 @@ const bindSettings = () => {
 
     try {
       const token = localStorage.getItem('access_token');
-      const response = await fetch('http://appguide.tech:8001/users/me/avatar', {
+      const response = await fetch('http://doubaospace.cn:8001/users/me/avatar', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,

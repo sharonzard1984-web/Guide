@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const password = passwordInput.value;
 
         try {
-            const response = await fetch('http://appguide.tech:8001/signup', {
+            const response = await fetch('http://doubaospace.cn:8001/signup', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -34,7 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 formData.append('username', email); // Use email to log in
                 formData.append('password', password);
 
-                const loginResponse = await fetch('http://appguide.tech:8001/token', {
+                const loginResponse = await fetch('http://doubaospace.cn:8001/token', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/x-www-form-urlencoded',
